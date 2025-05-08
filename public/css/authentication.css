@@ -1,0 +1,79 @@
+/* ================================ LOGIN + REGISTER PAGE ================================ */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 85vh;
+    background-color: #212631; /* Set the background color to black */
+    color: #fff;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+.login-card {
+    background: #343a40;
+    border-color: white;
+}
+
+.username {
+    background-color: #343a40; /* Same as the background color */
+    color: white;
+    border: 1px solid #495057;
+}
+
+.username::placeholder {
+    color: #afafaf;
+}
+
+.username:focus {
+    background-color: #343a40;
+    color: white;
+    border-color: #6c757d;
+    box-shadow: none;
+}
+
+.email {
+    background-color: #343a40; /* Same as the background color */
+    color: white;
+    border: 1px solid #495057;
+}
+
+.email::placeholder {
+    color: #afafaf;
+}
+
+.email:focus {
+    background-color: #343a40;
+    color: white;
+    border-color: #6c757d;
+    box-shadow: none;
+}
+
+.password {
+    background-color: #343a40; /* Same as the background color */
+    color: white;
+    border: 1px solid #495057;
+}
+
+.password::placeholder {
+    color: #afafaf;
+}
+
+.password:focus {
+    background-color: #343a40;
+    color: white;
+    border-color: #6c757d;
+    box-shadow: none;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+}
+
+.form-check-label {
+    margin-left: 0.5rem;
+    color: #fff; /* Ensure text color matches your theme */
+}

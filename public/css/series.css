@@ -1,0 +1,32 @@
+.series-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.series-group {
+    flex-basis: 100%;
+    margin-bottom: 20px;
+}
+
+.series-letter {
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.list-group-item {
+    display: block;
+    margin-bottom: 5px;
+    text-align: left; /* Ensure text alignment to the left */
+    padding: 10px;
+    border-radius: 5px; /* Text color */
+    text-decoration: none; /* Remove underline from links */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: #ee1b2f; /* Hover effect */
+    color: white; /* Text color on hover */
+    transform: translateY(-10px);
+}

@@ -1,0 +1,48 @@
+.custom-search-bar {
+    /* Same as the background color */
+    color: white; /* Optional: match border color with the background */
+    height: 50px; /* Adjust the height to fill the search bar container */
+    margin-right: 2px;
+}
+
+.custom-search-bar::placeholder {
+    color: #afafaf;
+}
+
+.custom-search-bar:focus {
+    color: black;
+    border-color: #ee1b2f;
+    box-shadow: none;
+}
+
+.custom-search-button {
+    background-color: white;
+    color: darkslategray;
+    border-color: #d8d7d7; /* Optional: match border color with the background */
+    height: 50px;
+}
+
+.custom-search-button:hover {
+    background-color: #ee1b2f; /* Same as search bar background */
+    color: white; /* Same as search bar text color */
+    border: 1px solid #ee1b2f;
+}
+
+.custom-search-button:focus {
+    background-color: #ee1b2f; /* Same as search bar background */
+    color: white; /* Same as search bar text color */
+    box-shadow: none;
+}
+
+.select2-container .select2-selection--single .select2-selection__arrow {
+    right: 10px;
+    /* Adjust as needed */
+    left: auto;
+}
+
+.select2-container--default
+    .select2-selection--single
+    .select2-selection__rendered {
+    padding-right: 30px;
+    /* Adjust to avoid overlap with the arrow */
+}
