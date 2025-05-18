@@ -2,219 +2,242 @@
 @extends('layout.navbar')
 
 @section('content')
-
-    <section>
-
-        <div class="container-fluid mt-5">
-            <div class="container text-center">
-                <h1><strong>INFORMASI PEMESANAN</strong></h1>
+    <section class="py-5">
+        <div class="container">
+            <!-- Header Section -->
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <h1 class="display-4 fw-bold">INFORMASI PEMESANAN</h1>
+                </div>
             </div>
-        </div>
 
-        <div class="container mt-2 mb-3">
-            @csrf
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    {{ $errors->first() }}
-                </div>
-            @endif
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-            @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-        </div>
-
-        <div class="container-fluid mt-5">
-            <div class="container">
-                <form action="{{ route('createOrder', ['id' => $produk->id]) }}" method="POST">
+            <!-- Alert Section -->
+            <div class="row mb-4">
+                <div class="col-12">
                     @csrf
-                    <div class="row">
-                        <div class="col-3">
-
-                            @foreach ($fotoproduk->where('id_produk', $produk->id)->take(1) as $foto)
-                                <img src="{{ asset($foto->path) }}" class="img-thumbnail" alt="fotoproduk">
-                            @endforeach
-
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ $errors->first() }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <div class="col-6">
-
-
-                            <h1><strong>{{ $produk->nama_produk }}</strong></h1>
-
-                            @if ($produk->additional)
-                                <h3><strong>Pilih Additional</strong></h3>
-                                @foreach (json_decode($produk->additional, true) as $nama => $harga)
-                                    <input type="checkbox" class="btn-check additional-check"
-                                        id="btn-check-additional-{{ $loop->index }}" name="additional[]"
-                                        value="{{ $nama }}" data-nama="{{ $nama }}"
-                                        data-harga="{{ $harga }}" autocomplete="off">
-                                    <label class="btn btn-outline-dark"
-                                        for="btn-check-additional-{{ $loop->index }}">{{ $nama }}</label>
-                                    <p class="harga-additional-value" hidden>Rp0</p> <!-- Tambahkan kelas unik di sini -->
-                                @endforeach
-                                <div id="emailHelp" class="form-text">Silahkan pilih additional yang tersedia (opsional)
-                                </div>
-                            @endif
-
-                            <div class="datepckr d-flex mt-3">
-                                <div class="col mx-1">
-                                    <label for="exampleInputEmail1" class="form-label">Tanggal Mulai<span
-                                            class="text-danger">*</span></label>
-                                    <input type="date" id="mulaisewa" name="mulaisewa" placeholder="Tanggal Mulai Sewa"
-                                        class="form-control form-control-lg w-100" required />
-                                    <div id="emailHelp" class="form-text">Silahkan pilih tanggal mulai sewa anda!</div>
-                                </div>
-                                <div class="col mx-1">
-                                    <label for="exampleInputEmail1" class="form-label">Tanggal Selesai<span
-                                            class="text-danger">*</span></label>
-                                    <input type="date" id="akhirsewa" name="akhirsewa" placeholder="Tanggal Akhir Sewa"
-                                        class="form-control form-control-lg w-100" required readonly />
-                                    <div id="emailHelp" class="form-text">Sistem akan otomatis memilih hari akhir sewa!
-                                        (durasi 3 hari)</div>
-                                </div>
-                            </div>
-
-                            <div class="sizeproduk-ctner mt-3" hidden>
-                                <label for="exampleInputEmail1" class="form-label">Ukuran<span
-                                        class="text-danger">*</span></label>
-                                <input type="text" name="size" placeholder="Ukuran Produk"
-                                    class="form-control form-control-lg w-100" value="{{ $produk->ukuran_produk }}" />
-                                <div id="emailHelp" class="form-text">Ukuran Produk yang Dipilih</div>
-                            </div>
-
-                            <div class="namapenyewa-ctner mt-3">
-                                <label for="exampleInputEmail1" class="form-label">Nama Penyewa<span
-                                        class="text-danger">*</span></label>
-                                <input type="text" name="nama" placeholder="Nama Penyewa"
-                                    class="form-control form-control-lg w-100" value="{{ auth()->user()->nama }}"
-                                    required />
-                                <div id="emailHelp" class="form-text">Masukkan nama anda</div>
-                            </div>
-
-                            <div class="alamat-ctner mt-3">
-                                <label for="exampleInputEmail1" class="form-label">Alamat Penyewa<span
-                                        class="text-danger">*</span></label>
-                                <textarea name="alamat" placeholder="Alamat Penyewa" class="form-control form-control-lg w-100" required>{{ auth()->user()->alamat }}</textarea>
-                                <div id="emailHelp" class="form-text">Pastikan alamat anda diisi dengan lengkap dan
-                                    detail
-                                    untuk memudahkan pengiriman!</div>
-                            </div>
-
-                            <div class="metodekirim-ctner mt-3">
-                                <label class="form-label">Metode Pengiriman<span class="text-danger">*</span></label><br>
-                                <select name="metodekirim" class="form-select" aria-label="Default select example">
-                                    @foreach ($produk->metode_kirim ?? [] as $ekspedisi)
-                                        <option value="{{ $ekspedisi }}">{{ $ekspedisi }}</option>
-                                    @endforeach
-                                </select>
-                                <div id="emailHelp" class="form-text">Silahkan pilih metode pengiriman dari toko yang
-                                    tersedia!</div>
-                            </div>
-
-                            <input type="hidden" id="additional-items" name="additional_items">
-
-
+                    @endif
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <div class="col-3">
+                    @endif
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                </div>
+            </div>
 
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5><strong>Ringkasan Belanja</strong></h5>
-                                    <table class="w-100">
-                                        <tr>
-                                            <td class="fw-bold" colspan="3">Total Barang</td>
-                                        </tr>
-                                        <tr class="text-secondary">
-                                            <td>Harga Katalog</td>
-                                            <td id="harga-katalog" class="text-end">
-                                                Rp{{ number_format($produk->harga, 0, '', '.') }}</td>
-                                        </tr>
-                                        <tr class="text-secondary">
-                                            <td>Harga Additional</td>
-                                            <td id="harga-additional-total" class="text-end">Rp0</td>
-                                        </tr>
-                                        <tr class="text-secondary">
-                                            <td>Harga Cuci</td>
-                                            @if ($produk->biaya_cuci)
-                                                <td id="harga-cuci" class="text-end">
-                                                    Rp{{ number_format($produk->biaya_cuci, 0, '', '.') }}</td>
-                                            @else
-                                                <td id="harga-cuci" class="text-end">Rp{{ number_format(0) }}</td>
-                                            @endif
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-bold" colspan="3">Biaya Transaksi</td>
-                                        </tr>
-                                        <tr class="text-secondary">
-                                            <td>Jaminan Ongkir</td>
-                                            <td id="ongkos-kirim" class="text-end">
-                                                Rp{{ number_format(30000, 0, '', '.') }}</td>
-                                        </tr>
-                                        <tr class="text-secondary">
-                                            <td>Jaminan Kostum</td>
-                                            <td class="text-end">Rp50.000</td>
-                                        </tr>
-                                        <tr class="text-secondary">
-                                            <td id="biaya-admin-label">Biaya Admin</td>
-                                            <td id="biaya-admin-value" class="text-end">Rp0</td>
-                                        </tr>
-                                    </table>
-
-                                    <h5 class="mt-2"><strong>Total Tagihan</strong></h5>
-                                    <h4><strong id="total-tagihan">Rp0</strong>
-                                    </h4>
-                                    <hr>
-                                    <p class="text-secondary">(<span class="text-danger">*</span>) Jaminan akan
-                                        dikembalikan
-                                        kepada penyewa<a data-bs-toggle="modal" data-bs-target="#infoJaminan"><i
-                                                class="fa-solid fa-regular fa-circle-info ms-2"></i></a></p>
-
-                                    <button type="submit" class="btn btn-danger w-100 mt-2">BAYAR</button>
+            <!-- Main Content -->
+            <div class="row">
+                <div class="col-12">
+                    <form action="{{ route('createOrder', ['id' => $produk->id]) }}" method="POST">
+                        @csrf
+                        <div class="row g-4">
+                            <!-- Product Image -->
+                            <div class="col-md-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        @foreach ($fotoproduk->where('id_produk', $produk->id)->take(1) as $foto)
+                                            <img src="{{ asset($foto->path) }}" class="img-fluid rounded" alt="fotoproduk">
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
 
+                            <!-- Product Details -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h2 class="card-title fw-bold mb-4">{{ $produk->nama_produk }}</h2>
+
+                                        @if ($produk->additional)
+                                            <div class="mb-4">
+                                                <h4 class="fw-bold mb-3">Pilih Additional</h4>
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    @foreach (json_decode($produk->additional, true) as $nama => $harga)
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="btn-check additional-check"
+                                                                id="btn-check-additional-{{ $loop->index }}"
+                                                                name="additional[]" value="{{ $nama }}"
+                                                                data-nama="{{ $nama }}"
+                                                                data-harga="{{ $harga }}" autocomplete="off">
+                                                            <label class="btn btn-outline-dark"
+                                                                for="btn-check-additional-{{ $loop->index }}">{{ $nama }}</label>
+                                                            <p class="harga-additional-value d-none">Rp0</p>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                                <div class="form-text">Silahkan pilih additional yang tersedia (opsional)
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        <div class="row g-3 mb-4">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Tanggal Mulai<span
+                                                        class="text-danger">*</span></label>
+                                                <input type="date" id="mulaisewa" name="mulaisewa"
+                                                    class="form-control form-control-lg" required>
+                                                <div class="form-text">Silahkan pilih tanggal mulai sewa anda!</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Tanggal Selesai<span
+                                                        class="text-danger">*</span></label>
+                                                <input type="date" id="akhirsewa" name="akhirsewa"
+                                                    class="form-control form-control-lg" required readonly>
+                                                <div class="form-text">Sistem akan otomatis memilih hari akhir sewa! (durasi
+                                                    3 hari)</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4" hidden>
+                                            <label class="form-label">Ukuran<span class="text-danger">*</span></label>
+                                            <input type="text" name="size" class="form-control form-control-lg"
+                                                value="{{ $produk->ukuran_produk }}" readonly>
+                                            <div class="form-text">Ukuran Produk yang Dipilih</div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">Nama Penyewa<span class="text-danger">*</span></label>
+                                            <input type="text" name="nama" class="form-control form-control-lg"
+                                                value="{{ auth()->user()->nama }}" required>
+                                            <div class="form-text">Masukkan nama anda</div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">Alamat Penyewa<span
+                                                    class="text-danger">*</span></label>
+                                            <textarea name="alamat" class="form-control form-control-lg" required>{{ auth()->user()->alamat }}</textarea>
+                                            <div class="form-text">Pastikan alamat anda diisi dengan lengkap dan detail
+                                                untuk memudahkan pengiriman!</div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">Metode Pengiriman<span
+                                                    class="text-danger">*</span></label>
+                                            <select name="metodekirim" class="form-select form-select-lg">
+                                                @foreach ($produk->metode_kirim ?? [] as $ekspedisi)
+                                                    <option value="{{ $ekspedisi }}">{{ $ekspedisi }}</option>
+                                                @endforeach
+                                            </select>
+                                            <div class="form-text">Silahkan pilih metode pengiriman dari toko yang
+                                                tersedia!</div>
+                                        </div>
+
+                                        <input type="hidden" id="additional-items" name="additional_items">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Order Summary -->
+                            <div class="col-md-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title fw-bold mb-4">Ringkasan Belanja</h5>
+
+                                        <div class="mb-4">
+                                            <h6 class="fw-bold">Total Barang</h6>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-secondary">Harga Katalog</span>
+                                                <span
+                                                    id="harga-katalog">Rp{{ number_format($produk->harga, 0, '', '.') }}</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-secondary">Harga Additional</span>
+                                                <span id="harga-additional-total">Rp0</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-secondary">Harga Cuci</span>
+                                                <span id="harga-cuci">
+                                                    @if ($produk->biaya_cuci)
+                                                        Rp{{ number_format($produk->biaya_cuci, 0, '', '.') }}
+                                                    @else
+                                                        Rp0
+                                                    @endif
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <h6 class="fw-bold">Biaya Transaksi</h6>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-secondary">Jaminan Ongkir</span>
+                                                <span id="ongkos-kirim">Rp30.000</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-secondary">Jaminan Kostum</span>
+                                                <span>Rp50.000</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span class="text-secondary">Biaya Admin</span>
+                                                <span id="biaya-admin-value">Rp0</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <h6 class="fw-bold">Total Tagihan</h6>
+                                            <h4 class="fw-bold" id="total-tagihan">Rp0</h4>
+                                        </div>
+
+                                        <hr>
+
+                                        <p class="text-secondary small">
+                                            (<span class="text-danger">*</span>) Jaminan akan dikembalikan kepada penyewa
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#infoJaminan">
+                                                <i class="fa-solid fa-regular fa-circle-info ms-2"></i>
+                                            </a>
+                                        </p>
+
+                                        <button type="submit" class="btn btn-danger w-100">BAYAR</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
 
-        <!-- Modal Grade -->
+        <!-- Modal Info Jaminan -->
         <div class="modal fade" id="infoJaminan" tabindex="-1" aria-labelledby="infoJaminanLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="infoJaminanLabel">Informasi Pengembalian Jaminan</h5>
+                        <h5 class="modal-title fw-bold" id="infoJaminanLabel">Informasi Pengembalian Jaminan</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="fw-bold">Bagaimana cara jaminan bekerja?</p>
+                        <h6 class="fw-bold">Bagaimana cara jaminan bekerja?</h6>
                         <p>Setiap penyewa akan membayarkan 2 jenis jaminan, yaitu <strong>jaminan ongkos kirim dan jaminan
-                                i kostum</strong>.
+                                kostum</strong>.
                             Kedua jaminan ini akan digunakan ketika terdapat denda atau pembayaran ongkos kirim dari toko.
                             Jaminan yang tersisa akan dikirimkan kembali kepada penyewa setelah penyewaan selesai.</p>
 
-                        <p class="fw-bold">Perhitungan Jaminan Ongkir</p>
+                        <h6 class="fw-bold mt-4">Perhitungan Jaminan Ongkir</h6>
                         <img src="{{ asset('images/bukti_ongkir.png') }}" alt="Input Ongkir"
-                            class="img-thumbnail w-100">
+                            class="img-fluid rounded mb-3">
                         <p>Jaminan ongkir akan dikalkulasi secara otomatis oleh Kalasewa <strong>setelah diinput oleh
                                 toko</strong>.
                             Jaminan ongkos kirim akan dikurangi dengan harga ongkos kirim yang sebenarnya. Jika harga ongkos
                             kirim yang sebenarnya lebih besar daripada harga jaminan, maka kalasewa akan memotong dari
                             jaminan kostum.</p>
 
-                        <img src="{{ asset('images/bukti_denda.png') }}" alt="Bukti denda" class="img-thumbnail w-100">
+                        <img src="{{ asset('images/bukti_denda.png') }}" alt="Bukti denda"
+                            class="img-fluid rounded mb-3">
                         <p>Selain dari ongkos kirim, jaminan juga akan berpengaruh dari <strong>Denda</strong> seperti
                             keterlambatan atau kerusakan yang dilakukan oleh penyewa.</p>
 
                         <img src="{{ asset('images/bukti_ongkir_penyewa.png') }}" alt="Informasi Ongkir"
-                            class="img-thumbnail w-100">
+                            class="img-fluid rounded mb-3">
                         <p>Setelah inputan dari toko, maka penyewa akan mendapatkan informasi berupa sisa jaminan yang
                             tersisa yang dapat dikembalikan dari kalasewa.</p>
                     </div>
@@ -226,7 +249,6 @@
         </div>
 
         @include('layout.footer')
-
     </section>
 
     <script>
@@ -267,10 +289,9 @@
                 biayaAdminElement.textContent = `Rp${biayaAdmin.toLocaleString('id-ID')}`;
 
                 let totalTagihan = hargaKatalog + totalHargaAdditional + biayaAdmin + hargaCuci + ongkosKirim +
-                    50000; // 50000 adalah Biaya Jaminan tetap
+                    50000;
                 totalTagihanElement.textContent = `Rp${totalTagihan.toLocaleString('id-ID')}`;
 
-                // Simpan additionalItems ke dalam hidden input untuk dikirimkan ke server
                 document.getElementById('additional-items').value = JSON.stringify(additionalItems);
             };
 
@@ -286,10 +307,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             var today = new Date();
             var yyyy = today.getFullYear();
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
             var dd = String(today.getDate()).padStart(2, '0');
 
-            // Calculate minDate (H+2)
             var minDate = new Date(today);
             minDate.setDate(today.getDate() + 2);
             var minyyyy = minDate.getFullYear();
@@ -297,7 +317,6 @@
             var mindd = String(minDate.getDate()).padStart(2, '0');
             var minDateString = minyyyy + '-' + minmm + '-' + mindd;
 
-            // Calculate maxDate (H+7)
             var maxDate = new Date(today);
             maxDate.setDate(today.getDate() + 7);
             var maxyyyy = maxDate.getFullYear();
@@ -324,5 +343,4 @@
             });
         });
     </script>
-
 @endsection

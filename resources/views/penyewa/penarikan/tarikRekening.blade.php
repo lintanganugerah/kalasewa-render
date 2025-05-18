@@ -1,65 +1,77 @@
 @extends('layout.template')
-@extends('layout.navbar')
 
 @section('content')
-    <section>
-
-        <div class="container-fluid">
-            <div class="container">
-                <div class="header-text text-center mt-5">
-                    <h1><strong>Penarikan Saldo</strong></h1>
+    <section class="py-5">
+        <div class="container">
+            <!-- Header Section -->
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <h1 class="display-4 fw-bold">Tarik Saldo</h1>
                 </div>
+            </div>
 
-                <div class="alert-content mt-2">
-                    @csrf
+            <!-- Alert Section -->
+            <div class="row mb-4">
+                <div class="col-12">
                     @if (session('success'))
-                        <div class="alert alert-success">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            {{ $errors->first() }}
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
                 </div>
+            </div>
 
-                <div class="table-penarikan mt-3">
-                    <div class="card">
-                        <div class="card-body">
-
-                            <form action="{{ route('tarikSaldo') }}" method="post">
+            <!-- Main Content -->
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <form action="{{ route('tarikRekening') }}" method="POST">
                                 @csrf
-                                <div class="nominal-tarik">
-                                    <label for="exampleInputEmail1" class="form-label">Nominal<span class="text-danger">*</span></label>
+                                <div class="mb-4">
+                                    <label for="jumlah" class="form-label">Jumlah Penarikan</label>
                                     <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon1">Rp</span>
-                                        <input type="number" class="form-control form-control-lg" name="nominal" placeholder="Nominal" aria-label="Nominal"
-                                            aria-describedby="basic-addon1" value="{{ $saldos->saldo ?? 0 }}" disabled>
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="number" class="form-control form-control-lg" id="jumlah"
+                                            name="jumlah" placeholder="Masukkan jumlah penarikan" required>
                                     </div>
-                                    <div id="emailHelp" class="form-text">Nominal yang dapat anda tarik</div>
+                                    <div class="form-text">Saldo tersedia: Rp{{ number_format($saldo, 0, '', '.') }}</div>
                                 </div>
 
-                                <div class="tujuang-rekening mt-3">
-                                    <label for="exampleInputEmail1" class="form-label">Tujuang Rekening<span class="text-danger">*</span></label>
-                                    <input class="form-control form-control-lg" type="text" placeholder=".form-control-lg" aria-label=".form-control-lg example"
-                                        name="tujuan_rekening" value="{{ $saldos->TujuanRekening->nama }} | {{ $saldos->nomor_rekening }} | {{ $saldos->nama_rekening }}" disabled>
-                                    <div id="emailHelp" class="form-text">Pastikan nomor rekening/e-wallet benar. Ingin
-                                        mengubah tujuan transfer? <a href="{{ route('viewUbahRekening') }}" class="text-danger">Klik disini</a></div>
+                                <div class="mb-4">
+                                    <label for="tujuan_rekening" class="form-label">Tujuan Rekening</label>
+                                    <select class="form-select form-select-lg" id="tujuan_rekening" name="tujuan_rekening"
+                                        required>
+                                        <option value="">Pilih rekening tujuan</option>
+                                        @foreach ($rekening as $item)
+                                            <option value="{{ $item->id }}">
+                                                {{ $item->nama_bank }} - {{ $item->nomor_rekening }}
+                                                ({{ $item->nama_pemilik }})
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
 
-                                <div class="aksi-btn d-flex gap-3 mt-3">
-                                    <a href="{{ route('viewPenarikan') }}" class="btn btn-danger w-100">Batal</a>
-                                    <button type="submit" class="btn btn-primary w-100">Tarik Saldo</button>
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="{{ route('penarikan') }}" class="btn btn-outline-secondary btn-lg me-md-2">
+                                        <i class="fas fa-times me-2"></i>Batal
+                                    </a>
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-money-bill-wave me-2"></i>Tarik Saldo
+                                    </button>
                                 </div>
                             </form>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        @include('layout.footer')
     </section>
 @endsection

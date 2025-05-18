@@ -2,92 +2,74 @@
 @extends('layout.navbar')
 
 @section('content')
-<link rel="stylesheet" type="text/css" href="{{ asset('css/searchbar.css') }}" />
-<section>
-
-    <div class="header-title">
-        <div class="container-fluid mt-5">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <h1><strong>Cari toko favoritmu!</strong></h1>
-                    </div>
+    <section class="py-5">
+        <div class="container">
+            <!-- Header Section -->
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h1 class="display-4 fw-bold">Cari toko favoritmu!</h1>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="filter-select">
-        <div class="container-fluid">
-            <div class="container">
-                <div class="form-filter">
-                    <form action="{{ route('searchToko') }}" method="GET" class="">
+            <!-- Search Section -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <form action="{{ route('searchToko') }}" method="GET">
                         @csrf
-                        <div class="searchbar my-3">
-                            <div class="input-group">
-                                <input type="text" name="search" class="form-control form-search custom-search-bar"
-                                    placeholder="Toko mana yang akan dikunjungi hari ini?" aria-label="Search" />
-                                <button class="btn py-2 custom-search-button" type="submit" id="search-button">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control form-control-lg"
+                                placeholder="Toko mana yang akan dikunjungi hari ini?" aria-label="Search">
+                            <button class="btn btn-danger" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="container-fluid">
-        <div class="container">
-            @foreach ($toko->chunk(5) as $chunk)
-            <div class="row-kartu d-flex mb-3">
-                @foreach ($chunk as $tk)
-                <div class="col-2" style="margin-right: 43px;">
-                    <a href="{{ route('viewToko', ['id' => $tk->id]) }}" class="card-link">
-                        <div class="card custom-card text-bg-dark border-secondary" style="width: 250px; height: 100%;">
-                            <img src="{{ asset($tk->user->foto_profil) }}" class="card-img-top img-fluid h-100"
-                                alt="fotoproduk" style="object-fit: cover;">
-                            <div class="card-body">
-                                <h5 style="margin-bottom: 5px;"><strong>{{ $tk->nama_toko }}</strong></h5>
-                                <p style="margin-bottom: 5px;">Rating Toko:
-                                    @if(isset($averageRatings[$tk->id]))
-                                    {{ number_format($averageRatings[$tk->id], 1) }}
-                                    @else
-                                    0
-                                    @endif
-                                    <i class="ri-star-line"></i>
-                                </p>
-                                @if (isset($averageRatings[$tk->id]) && $averageRatings[$tk->id] >= 4)
-                                <span class="badge text-white"
-                                    style="background: linear-gradient(to right, #EAD946, #D99C00);">Terpercaya</span>
-                                @elseif (
-                                isset($averageRatings[$tk->id]) && $averageRatings[$tk->id] > 0 &&
-                                $averageRatings[$tk->id] < 2.5 ) <span class="badge text-bg-danger">Bermasalah</span>
-                                    @elseif (
-                                    isset($averageRatings[$tk->id]) && $averageRatings[$tk->id] >= 2.5 &&
-                                    $averageRatings[$tk->id] < 4 ) <span class="badge text-white"
-                                        style="background-color: #EB7F01;">Standar</span>
+            <!-- Store List Section -->
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-4">
+                @foreach ($toko as $tk)
+                    <div class="col">
+                        <a href="{{ route('viewToko', ['id' => $tk->id]) }}" class="text-decoration-none">
+                            <div class="card h-100 bg-dark text-white border-secondary">
+                                <div class="ratio ratio-1x1">
+                                    <img src="{{ asset($tk->user->foto_profil) }}" class="card-img-top" alt="fotoproduk"
+                                        style="object-fit: cover;">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold">{{ $tk->nama_toko }}</h5>
+                                    <p class="card-text mb-2">
+                                        Rating Toko:
+                                        @if (isset($averageRatings[$tk->id]))
+                                            {{ number_format($averageRatings[$tk->id], 1) }}
                                         @else
-                                        <span class="badge text-white" style="background-color: 6DC0D0;">Pendatang
-                                            Baru</span>
+                                            0
                                         @endif
-                                        <p class="card-text" style="color: orange;">
-                                            <i class="ri-t-shirt-line"></i>
-                                            {{ $tk->produks_count }} Kostum
-                                        </p>
+                                        <i class="ri-star-line"></i>
+                                    </p>
+                                    @if (isset($averageRatings[$tk->id]) && $averageRatings[$tk->id] >= 4)
+                                        <span class="badge"
+                                            style="background: linear-gradient(to right, #EAD946, #D99C00);">Terpercaya</span>
+                                    @elseif (isset($averageRatings[$tk->id]) && $averageRatings[$tk->id] > 0 && $averageRatings[$tk->id] < 2.5)
+                                        <span class="badge bg-danger">Bermasalah</span>
+                                    @elseif (isset($averageRatings[$tk->id]) && $averageRatings[$tk->id] >= 2.5 && $averageRatings[$tk->id] < 4)
+                                        <span class="badge" style="background-color: #EB7F01;">Standar</span>
+                                    @else
+                                        <span class="badge" style="background-color: #6DC0D0;">Pendatang Baru</span>
+                                    @endif
+                                    <p class="card-text text-warning mt-2">
+                                        <i class="ri-t-shirt-line"></i>
+                                        {{ $tk->produks_count }} Kostum
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                </div>
+                        </a>
+                    </div>
                 @endforeach
             </div>
-            @endforeach
         </div>
-    </div>
 
-    @include('layout.footer')
-
-</section>
-
+        @include('layout.footer')
+    </section>
 @endsection

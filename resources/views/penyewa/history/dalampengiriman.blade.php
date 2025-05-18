@@ -2,119 +2,96 @@
 @extends('layout.navbar')
 
 @section('content')
-
-<style>
-.no-underline {
-    text-decoration: none;
-    /* Remove underline */
-    color: inherit;
-    /* Inherit the color from the parent element or set it explicitly */
-}
-</style>
-
-<section>
-
-    <div class="header-text-content mt-5 text-center">
-        <div class="container-fluid">
-            <div class="container">
-                <h1><strong>History Penyewaan</strong></h1>
+    <div class="container-fluid py-5">
+        <div class="container">
+            <!-- Header Section -->
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <h1 class="display-4 fw-bold">History Penyewaan</h1>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <div class="container mt-2">
-        @csrf
-        @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-        @endif
-        @if (session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-        @endif
-    </div>
+            <!-- Alert Section -->
+            @csrf
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
-    <div class="button-content mt-5">
-        <div class="container-fluid">
-            <div class="container">
-                <div class="card">
-                    <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" id="historyTab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link text-secondary"
-                                    href="{{ route('viewHistoryMenungguDiproses') }}">Menunggu Konfirmasi
-                                    @if ($countMenungguDiproses)
-                                    <span class="position-top badge rounded-pill bg-danger">
-                                        {{ $countMenungguDiproses }}
-                                    </span>
-                                    @endif
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page"
-                                    href="{{ route('viewHistoryDalamPengiriman') }}">Dalam
-                                    Pengiriman @if ($countDalamPengiriman)
-                                    <span class="position-top badge rounded-pill bg-danger">
-                                        {{ $countDalamPengiriman }}
-                                    </span>
-                                    @endif
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-secondary"
-                                    href="{{ route('viewHistorySedangBerlangsung') }}">Sedang
-                                    Digunakan @if ($countSedangBerlangsung)
-                                    <span class="position-top badge rounded-pill bg-danger">
-                                        {{ $countSedangBerlangsung }}
-                                    </span>
-                                    @endif
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-secondary" href="{{ route('viewHistoryTelahKembali') }}">Dikirim
-                                    Kembali @if ($countTelahKembali)
-                                    <span class="position-top badge rounded-pill bg-danger">
-                                        {{ $countTelahKembali }}
-                                    </span>
-                                    @endif
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-secondary"
-                                    href="{{ route('viewHistoryDibatalkan') }}">Dibatalkan
-                                    @if ($countDibatalkan)
-                                    <span class="position-top badge rounded-pill bg-danger">
-                                        {{ $countDibatalkan }}
-                                    </span>
-                                    @endif
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-secondary" href="{{ route('viewHistoryDiretur') }}">Diretur
-                                    @if ($countDiretur)
-                                    <span class="position-top badge rounded-pill bg-danger">
-                                        {{ $countDiretur }}
-                                    </span>
-                                    @endif
-
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-secondary"
-                                    href="{{ route('viewHistoryPenyewaanSelesai') }}">Penyewaan
-                                    Selesai</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <div class="tab-content">
-                            @if ($orders)
-                            <table class="table w-100" id="table-history">
-                                <thead>
+            <!-- Navigation Tabs -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <ul class="nav nav-tabs card-header-tabs" id="historyTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" href="{{ route('viewHistoryMenungguDiproses') }}">
+                                Menunggu Konfirmasi
+                                @if ($countMenungguDiproses)
+                                    <span class="badge rounded-pill bg-danger">{{ $countMenungguDiproses }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ route('viewHistoryDalamPengiriman') }}">
+                                Dalam Pengiriman
+                                @if ($countDalamPengiriman)
+                                    <span class="badge rounded-pill bg-danger">{{ $countDalamPengiriman }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" href="{{ route('viewHistorySedangBerlangsung') }}">
+                                Sedang Digunakan
+                                @if ($countSedangBerlangsung)
+                                    <span class="badge rounded-pill bg-danger">{{ $countSedangBerlangsung }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" href="{{ route('viewHistoryTelahKembali') }}">
+                                Dikirim Kembali
+                                @if ($countTelahKembali)
+                                    <span class="badge rounded-pill bg-danger">{{ $countTelahKembali }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" href="{{ route('viewHistoryDibatalkan') }}">
+                                Dibatalkan
+                                @if ($countDibatalkan)
+                                    <span class="badge rounded-pill bg-danger">{{ $countDibatalkan }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" href="{{ route('viewHistoryDiretur') }}">
+                                Diretur
+                                @if ($countDiretur)
+                                    <span class="badge rounded-pill bg-danger">{{ $countDiretur }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" href="{{ route('viewHistoryPenyewaanSelesai') }}">
+                                Penyewaan Selesai
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    @if ($orders)
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle" id="table-history">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>#</th>
+                                        <th class="text-center">#</th>
                                         <th>Nomor Order</th>
                                         <th>Nama Produk</th>
                                         <th>Additional</th>
@@ -129,95 +106,96 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($orders as $order)
-                                    @if ($order->status == 'Dalam Pengiriman')
-                                    <tr>
-                                        <td data-title="#" class="text-center">
-                                            {{ $loop->iteration }}
-                                        </td>
-                                        <td>{{ $order->nomor_order }}</td>
-                                        <td>{{ $order->nama_produk }}</td>
-                                        <td>
-                                            @if (!empty($order->additional) && is_array($order->additional))
-                                            @foreach ($order->additional as $additionalItem)
-                                            @if (is_array($additionalItem) && isset($additionalItem['nama']))
-                                            {{ $additionalItem['nama'] }}
-                                            @endif
-                                            @endforeach
-                                            @else
-                                            <p>-</p>
-                                            @endif
-                                        </td>
-                                        <td>{{ $order->nama_toko }}</td>
-                                        <td>{{ $order->tanggal_mulai }}</td>
-                                        <td>{{ $order->tanggal_selesai }}</td>
-                                        <td>Rp{{ number_format($order->grand_total, 0, '', '.') }}</td>
-                                        @if ($order->bukti_resi)
-                                        <td>
-                                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
-                                                data-bs-target="#resiModal-{{ $loop->iteration }}">
-                                                Lihat Resi
-                                            </button>
-                                        </td>
-                                        @else
-                                        <td>
-                                            <button type="button" class="btn btn-outline-danger" disabled>
-                                                Lihat Resi
-                                            </button>
-                                        </td>
-                                        @endif
-                                        <td>{{ $order->status }}</td>
-                                        <td>
-                                            <a class="btn btn-danger w-100"
-                                                href="{{ route('viewDetailPemesanan', ['orderId' => $order->nomor_order]) }}">Detail</a>
+                                        @if ($order->status == 'Dalam Pengiriman')
+                                            <tr>
+                                                <td class="text-center">{{ $loop->iteration }}</td>
+                                                <td>{{ $order->nomor_order }}</td>
+                                                <td>{{ $order->nama_produk }}</td>
+                                                <td>
+                                                    @if (!empty($order->additional) && is_array($order->additional))
+                                                        @foreach ($order->additional as $additionalItem)
+                                                            @if (is_array($additionalItem) && isset($additionalItem['nama']))
+                                                                <span
+                                                                    class="badge bg-secondary me-1">{{ $additionalItem['nama'] }}</span>
+                                                            @endif
+                                                        @endforeach
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
+                                                <td>{{ $order->nama_toko }}</td>
+                                                <td>{{ $order->tanggal_mulai }}</td>
+                                                <td>{{ $order->tanggal_selesai }}</td>
+                                                <td>Rp{{ number_format($order->grand_total, 0, '', '.') }}</td>
+                                                <td>
+                                                    @if ($order->bukti_resi)
+                                                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#resiModal-{{ $loop->iteration }}">
+                                                            Lihat Resi
+                                                        </button>
+                                                    @else
+                                                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                                            disabled>
+                                                            Lihat Resi
+                                                        </button>
+                                                    @endif
+                                                </td>
+                                                <td><span class="badge bg-info">{{ $order->status }}</span></td>
+                                                <td>
+                                                    <div class="d-grid gap-2">
+                                                        <a class="btn btn-danger btn-sm"
+                                                            href="{{ route('viewDetailPemesanan', ['orderId' => $order->nomor_order]) }}">
+                                                            Detail
+                                                        </a>
+                                                        <a href="{{ url('/chat' . '/' . $order->toko->id_user) }}"
+                                                            target="_blank" class="btn btn-outline-success btn-sm">
+                                                            Chat Toko
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                                            <a href="{{ url('/chat' . '/' . $order->toko->id_user) }}" target="_blank"
-                                                class="no-underline"><button type="button"
-                                                    class="btn btn-outline-success w-100 mt-1">Chat Toko</button></a>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Modal for Resi -->
-                                    <div class="modal fade" id="resiModal-{{ $loop->iteration }}" tabindex="-1"
-                                        aria-labelledby="resiModalLabel-{{ $loop->iteration }}" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h1 class="modal-title fs-5"
-                                                        id="resiModalLabel-{{ $loop->iteration }}">
-                                                        Bukti
-                                                        Resi</h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Nomor Resi: <strong>{{ $order->nomor_resi }}</strong></p>
-                                                    <p>Ongkos Kirim:
-                                                        <strong>Rp{{ number_format($order->ongkir_pengiriman, 0, '', '.') }}</strong>
-                                                    </p>
-                                                    <img src="{{ asset($order->bukti_resi) }}" alt="Resi"
-                                                        class="rounded img-fluid mt-3">
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Close</button>
+                                            <!-- Resi Modal -->
+                                            <div class="modal fade" id="resiModal-{{ $loop->iteration }}" tabindex="-1"
+                                                aria-labelledby="resiModalLabel-{{ $loop->iteration }}" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title"
+                                                                id="resiModalLabel-{{ $loop->iteration }}">
+                                                                Bukti Resi
+                                                            </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p class="mb-2">Nomor Resi:
+                                                                <strong>{{ $order->nomor_resi }}</strong>
+                                                            </p>
+                                                            <p class="mb-3">Ongkos Kirim:
+                                                                <strong>Rp{{ number_format($order->ongkir_pengiriman, 0, '', '.') }}</strong>
+                                                            </p>
+                                                            <img src="{{ asset($order->bukti_resi) }}" alt="Resi"
+                                                                class="img-fluid rounded shadow-sm">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Tutup</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    @endif
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
-                            @endif
                         </div>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 
     @include('layout.footer')
-
-</section>
-
 @endsection
