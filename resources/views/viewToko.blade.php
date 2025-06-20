@@ -21,10 +21,7 @@
             <div class="row align-items-center mb-4">
                 <div class="col-md-3 mb-4">
                     <div class="d-flex align-items-center gap-3">
-                        @foreach ($user->where('id', $toko->id_user) as $usr)
-                            <img src="{{ asset($usr->foto_profil) }}" alt="User" class="img-fluid rounded-circle"
-                                style="width: 100px; height: 100px; object-fit: cover;">
-                        @endforeach
+                        <img src="{{ asset($toko->user->foto_profil) }}" alt="User" class="img-fluid rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
                         <div class="d-flex flex-column">
                             <h4 class="mb-2">{{ $toko->nama_toko }}</h4>
                             <p class="mb-2">
@@ -155,27 +152,24 @@
                     <div class="col">
                         <a href="{{ route('viewDetail', ['id' => $prod->id]) }}" class="text-decoration-none">
                             <div class="card h-100 bg-dark text-white border-secondary">
-                                @foreach ($fotoproduk->where('id_produk', $prod->id)->take(1) as $foto)
+                                @if ($prod->FotoProduk)
                                     <div class="ratio ratio-1x1">
-                                        <img src="{{ asset($foto->path) }}" class="card-img-top" alt="fotoproduk"
-                                            style="object-fit: cover;">
+                                        <img src="{{ asset($prod->FotoProduk->path) }}" class="card-img-top" alt="fotoproduk" style="object-fit: cover;">
                                     </div>
-                                @endforeach
+                                @endif
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-2">
                                         <div class="me-2">
-                                            @foreach ($toko->where('id', $prod->id_toko) as $tk)
-                                                @foreach ($user->where('id', $tk->id_user) as $usr)
-                                                    <img src="{{ asset($usr->foto_profil) }}" alt="User"
-                                                        class="rounded-circle"
-                                                        style="width: 30px; height: 30px; object-fit: cover;">
-                                                @endforeach
-                                            @endforeach
+                                            @if ($toko->id == $prod->id_toko)
+                                                <img src="{{ asset($toko->user->foto_profil) }}" alt="User"
+                                                    class="rounded-circle"
+                                                    style="width: 30px; height: 30px; object-fit: cover;">
+                                            @endif
                                         </div>
                                         <div class="small">
-                                            @foreach ($toko->where('id', $prod->id_toko)->take(1) as $tk)
-                                                <div class="fw-bold text-truncate">{{ $tk->nama_toko }}</div>
-                                            @endforeach
+                                            @if ($toko->id == $prod->id_toko)
+                                                <div class="fw-bold text-truncate">{{ $toko->nama_toko }}</div>
+                                            @endif
                                         </div>
                                     </div>
                                     <h5 class="card-title">{{ $prod->nama_produk }}</h5>

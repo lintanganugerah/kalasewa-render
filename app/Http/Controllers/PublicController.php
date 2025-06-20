@@ -69,11 +69,10 @@ class PublicController extends Controller
         // Ambil Top Series
         $topSeries = TopSeries::orderBy('banyak_dipesan', 'desc')->first();
 
-        if($topSeries){
+        if ($topSeries) {
             // Ambil produk dari Top Series
             $topProduk = Produk::whereIn('status_produk', ['aktif', 'tidak ready'])->where('id_series', $topSeries->id_series)->get();
             return view('homepage', compact('produk', 'fotoproduk', 'toko', 'user', 'series', 'brand', 'averageRatings', 'topSeries', 'topProduk'));
-
         }
 
         return view('homepage', compact('produk', 'fotoproduk', 'toko', 'user', 'series', 'brand', 'averageRatings', 'topSeries'));
@@ -159,33 +158,20 @@ class PublicController extends Controller
 
     public function viewToko(Request $request, $id)
     {
-        $toko = Toko::findOrFail($id);
+        $toko = Toko::with('user')->findOrFail($id);
 
-        // Ambil semua nilai unik brand, tanpa memandang status produk
-        $brand = Produk::select('brand')->distinct()->orderBy('brand', 'asc')->pluck('brand');
+        $produk = Produk::with(['FotoProduk', 'seriesDetail'])
+            ->where('id_toko', $id)
+            ->whereIn('status_produk', ['aktif', 'tidak ready'])
+            ->when($request->brand, fn($q) => $q->where('brand', $request->brand))
+            ->orderBy('updated_at', 'desc')
+            ->get();
 
-        // Ambil produk dengan status 'aktif' dan milik toko yang bersangkutan
-        $produkQuery = Produk::whereIn('status_produk', ['aktif', 'tidak ready'])->orderBy('updated_at', 'desc')->where('id_toko', $id);;
-
-        // Terapkan filter jika ada
-        if ($request->has('brand')) {
-            $produkQuery->where('brand', $request->brand);
-        }
-        $produk = $produkQuery->get();
-
-        // Ambil semua foto produk, toko, dan pengguna
-        $fotoproduk = FotoProduk::all();
-        $user = User::all();
-
-        // Ambil semua series dan urutkan secara abjad
         $series = Series::orderBy('series', 'asc')->get();
-
-        $review = Review::where('id_toko', $id)->get();
-
-        // Hitung rata-rata nilai review toko
+        $brand = Produk::select('brand')->distinct()->pluck('brand');
         $averageTokoRating = Review::where('id_toko', $id)->avg('nilai');
 
-        return view('viewToko', compact('produk', 'fotoproduk', 'toko', 'user', 'series', 'brand', 'review', 'averageTokoRating'));
+        return view('viewToko', compact('toko', 'produk', 'series', 'brand', 'averageTokoRating'));
     }
 
     public function searchProdukToko(Request $request, $id)
@@ -335,10 +321,8 @@ class PublicController extends Controller
     public function searchToko(Request $request)
     {
         $search = $request->get('search'); // Mengambil nilai dari input 'search' di form
-        $toko = Toko::where('nama_toko', 'like', '%' . $search . '%')->withCount('produks')->get();
-        ; // Melakukan pencarian berdasarkan nama toko
+        $toko = Toko::where('nama_toko', 'like', '%' . $search . '%')->withCount('produks')->get();; // Melakukan pencarian berdasarkan nama toko
 
         return view('listToko', compact('toko'));
     }
-
 }
